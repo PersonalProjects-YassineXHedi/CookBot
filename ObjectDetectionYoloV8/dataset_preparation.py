@@ -1,5 +1,6 @@
 from ultralytics.utils import yaml_load
 import os 
+import random
 
 DATA_PATH = "/home/yassine/GitRepo/Data/yolo_dataset_v1"
 
@@ -52,7 +53,21 @@ def get_classes_images_and_labels(data_path = DATA_PATH):
         classes_images_and_labels[name] = image_path_list
     return classes_images_and_labels
 
+def get_class_num_images(classes_images_and_labels, num, class_name):
+    images_and_labels_one_class = []
+    images_and_labels = classes_images_and_labels[class_name]
+    if(len(images_and_labels) < num):
+        return
+    i=0
+    while(i<num):
+        value = random.randint(0,len(images_and_labels))
+        images_and_labels_one_class.append(images_and_labels[value])
+    return images_and_labels_one_class
 
+
+
+    
+    
 
 
 
