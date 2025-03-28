@@ -14,9 +14,12 @@ def adapt_path(original_path):
     adapted_path = "\\".join(parts)
     
     return adapted_path
+def main():
+    original_path = "/home/hboua/GitRepo/Data/CandyDataset/data.yaml"
+    print(adapt_path(original_path))
 
-input_path = r"\home\yassine\GitRepo\YassineXHedi\ObjectDetectionYoloV8\DatasetAnalysis"
-output_path = adapt_path(input_path)
 
-print("Adapted Path:", output_path)
+if __name__ == "__main__":
+    main()
+
 
