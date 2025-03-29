@@ -8,6 +8,15 @@ DATA_PATH = '/home/yassine/GitRepo/Data'
 YOLO_DATA_PATH = "/home/yassine/GitRepo/Data/yolo_dataset_v1"
 
 def get_classes_and_count(data_path = YOLO_DATA_PATH):
+    """
+    Parses YOLO data.yaml and counts the number of label occurrences for each class.
+
+    Args:
+        data_path (str): Path to the dataset directory containing data.yaml.
+
+    Returns:
+        dict: Dictionary of class names and their total counts, sorted descending.
+    """
     data = yaml_load(data_path + "/data.yaml")
 
     names = data['names']
@@ -32,6 +41,15 @@ def get_classes_and_count(data_path = YOLO_DATA_PATH):
     return classes_and_count
 
 def get_classes_images_and_labels(data_path = YOLO_DATA_PATH):
+    """
+    Builds a nested dictionary of image-label path pairs for each class and split (train/val/test).
+
+    Args:
+        data_path (str): Path to the YOLO dataset folder.
+
+    Returns:
+        dict: Structure like {'train': {'class1': [(img1, lbl1), ...]}, ...}
+    """
     data = yaml_load(data_path + "/data.yaml")
 
     names = data['names']
@@ -61,6 +79,17 @@ def get_classes_images_and_labels(data_path = YOLO_DATA_PATH):
 
 
 def get_class_images_labels(classes_images_and_labels, class_name, percent = 100):
+    """
+    Selects a percentage of samples from one class across all dataset splits.
+
+    Args:
+        classes_images_and_labels (dict): Output of get_classes_images_and_labels().
+        class_name (str): Class to select images from.
+        percent (int): Percentage of data to include (1–100).
+
+    Returns:
+        dict: Per-split selection of (image, label) tuples.
+    """
     if(percent > 100 or percent <=0):
             return
     images_and_labels_one_class = {}
@@ -80,6 +109,15 @@ def get_class_images_labels(classes_images_and_labels, class_name, percent = 100
 
 
 def try_create_dir_and_push_data_for_specific_class(folder_name, image_and_label_path_dict, folder_path = DATA_PATH):
+    """
+    Creates 'images' and 'labels' directories inside a given folder, and copies the files there.
+
+    Args:
+        folder_name (str): Subfolder name (train/val/test).
+        image_and_label_path_dict (dict): Dict containing (image, label) tuples.
+        folder_path (str): Root directory to create the folder in.
+    """
+    
     #create dir 
     path = folder_path + '/' + folder_name
     if not os.path.exists(path):
@@ -99,11 +137,31 @@ def try_create_dir_and_push_data_for_specific_class(folder_name, image_and_label
         shutil.copy(label_path, labels_dir_path)
 
 def get_first_n_classe(n, data_path = YOLO_DATA_PATH):
+    """
+    Returns the top-N most common class names from the dataset.
+
+    Args:
+        n (int): Number of classes to return.
+        data_path (str): Dataset directory path.
+
+    Returns:
+        list: List of class names.
+    """
     dic_classes_counts = get_classes_and_count(data_path)
     n_classes = list(dic_classes_counts.keys())[:n]
     return n_classes
 
 def get_first_classe_with_counts_higher_than_n(n, data_path = YOLO_DATA_PATH):
+    """
+    Returns all class names with at least N instances.
+
+    Args:
+        n (int): Minimum number of instances required.
+        data_path (str): Dataset directory path.
+
+    Returns:
+        list: List of class names with count > n.
+    """
     dic_classes_counts = get_classes_and_count(data_path)
     n_classes = []
     for class_name in dic_classes_counts.keys():
@@ -114,6 +172,15 @@ def get_first_classe_with_counts_higher_than_n(n, data_path = YOLO_DATA_PATH):
 
 
 def create_dataset(percent, new_dataset_folder_path, dataset_folder_name, full_dataset_path = YOLO_DATA_PATH):
+    """
+    Builds a new dataset folder containing a percentage of each class from the original dataset.
+
+    Args:
+        percent (int): Percentage of data to copy (per class, per split).
+        new_dataset_folder_path (str): Path where the new dataset will be created.
+        dataset_folder_name (str): Name of the new dataset folder.
+        full_dataset_path (str): Path to the original YOLO dataset.
+    """
     classes_images_and_labels = get_classes_images_and_labels(full_dataset_path)
     new_dataset_folder_full_path = new_dataset_folder_path + '/' + dataset_folder_name
     os.makedirs(new_dataset_folder_full_path, exist_ok=False)
