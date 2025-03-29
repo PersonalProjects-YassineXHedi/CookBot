@@ -6,6 +6,7 @@ import matplotlib.image as mpimg
 
 DATA_PATH = adapt_path("/home/hboua/GitRepo/Data/CandyDataset")
 cat_dog_image = adapt_path("cat_dog.jpg")
+cat_dog_image
 #Load a model
 model = YOLO("yolov8s.pt")
 
