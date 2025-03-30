@@ -165,9 +165,28 @@ def get_first_classe_with_counts_higher_than_n(n, data_path = YOLO_DATA_PATH):
     dic_classes_counts = get_classes_and_count(data_path)
     n_classes = []
     for class_name in dic_classes_counts.keys():
-        if(class_name.values() < n):
+        if(dic_classes_counts[class_name] < n):
             break
         n_classes.append(class_name)
+    return n_classes
+
+def get_last_classe_with_counts_lower_than_n(n, data_path = YOLO_DATA_PATH):
+    """
+    Returns all class names with at maximum N instances.
+
+    Args:
+        n (int): Minimum number of instances required.
+        data_path (str): Dataset directory path.
+
+    Returns:
+        list: List of class names with count <= n.
+    """
+    dic_classes_counts = get_classes_and_count(data_path)
+    n_classes = []
+    for class_name in dic_classes_counts.keys():
+        if(dic_classes_counts[class_name] <= n):
+            n_classes.append(class_name)
+        continue
     return n_classes
 
 
@@ -190,7 +209,4 @@ def create_dataset(percent, new_dataset_folder_path, dataset_folder_name, full_d
         for class_name in classes_images_and_labels[dir_name].keys():
             images_and_labels_one_class = get_class_images_labels(classes_images_and_labels, class_name,percent)
             try_create_dir_and_push_data_for_specific_class(dir_name, images_and_labels_one_class, new_dataset_folder_full_path)
-
-
-
 
