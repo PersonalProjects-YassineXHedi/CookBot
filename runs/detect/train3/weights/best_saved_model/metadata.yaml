@@ -1,0 +1,44 @@
+description: Ultralytics best model trained on /home/yassine/GitRepo/Data/yolo_dataset_v2/data.yaml
+author: Ultralytics
+date: '2025-03-30T16:55:48.697765'
+version: 8.3.94
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 640
+- 640
+names:
+  0: apple
+  1: avocado
+  2: banana
+  3: beef
+  4: bread
+  5: broccoli
+  6: cabbage
+  7: carrot
+  8: cheese
+  9: chicken
+  10: corn
+  11: cucumber
+  12: egg
+  13: eggplant
+  14: garlic
+  15: ground beef
+  16: lemon
+  17: lettuce
+  18: mushrooms
+  19: onion
+  20: pepper
+  21: pork
+  22: potato
+  23: shrimp
+  24: strawberry
+  25: tomato
+args:
+  batch: 1
+  half: false
+  int8: false
+  nms: false
