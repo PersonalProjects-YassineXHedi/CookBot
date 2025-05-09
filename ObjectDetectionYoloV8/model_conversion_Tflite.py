@@ -7,4 +7,4 @@ from adaptative_path_function import adapt_path
 # model.train(data=YOLO_DATA_PATH+'/data.yaml', epochs=50, imgsz=640)
 
 model = YOLO("runs/detect/train3/weights/best.pt")
-model.export(format="tflite")
+print(model.modules())

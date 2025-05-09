@@ -2,10 +2,10 @@ from ultralytics.utils import yaml_load
 import os 
 import random
 import shutil
-import math 
+import math
 
-DATA_PATH = '/home/yassine/GitRepo/Data'
-YOLO_DATA_PATH = "/home/yassine/GitRepo/Data/yolo_dataset_v1"
+DATA_PATH = '/home/yassine/GitRepo/Data/SaladDatasets'
+YOLO_DATA_PATH = "/home/yassine/GitRepo/Data/SaladDatasets/v1"
 
 def get_classes_and_count(data_path = YOLO_DATA_PATH):
     """
