@@ -1,12 +1,18 @@
 import os
 import yaml
 import shutil
+from annotation_adapter import change_class_number
 
-old_dataset_folder_path = '/home/yassine/GitRepo/Data/SaladDataset'
-new_yaml_file = '/home/yassine/GitRepo/Data/test/new_data.yaml'
+def create_dataset_from_classes(old_dataset_folder_path, new_yaml_path):
+    """
+    Creates a new YOLO dataset by extracting only the classes defined in a new YAML file
+    from an old dataset, keeping only matching classes and their corresponding images/labels.
 
-def create_dataset_from_classes(old_dataset_folder_path, new_yaml_file):
-    with open(new_yaml_file, 'r') as new_file:
+    Args:
+        old_dataset_folder_path (str): Path to the original dataset folder (contains data.yaml).
+        new_yaml_path (str): Path to the new YAML file defining the subset of classes to keep.
+    """
+    with open(new_yaml_path, 'r') as new_file:
         new_yaml_file = yaml.safe_load(new_file)
 
     old_yaml_path = old_dataset_folder_path + "/data.yaml"
@@ -37,8 +43,24 @@ def create_dataset_from_classes(old_dataset_folder_path, new_yaml_file):
         for img_lbl in img_lbl_list:
             shutil.copy(img_lbl[0], imgs_dir_path)
             shutil.copy(img_lbl[1], lbls_dir_path)
+    change_class_number(old_yaml_path, new_yaml_path)
+    shutil.copy(new_yaml_path, new_dataset_path)
+    old_name = new_dataset_path + '/' + os.path.basename(new_yaml_path)
+    new_name = new_dataset_path + '/data.yaml'
+    os.rename(old_name,new_name)
 
 def get_images_and_labels_to_keep(files_path, idxs_to_leave):
+    """
+    Returns a list of (image_path, label_path) tuples for label files that contain
+    only classes we want to keep.
+
+    Args:
+        files_path (str): Path to the folder containing label (.txt) files.
+        idxs_to_leave (list[int]): List of class indices to keep.
+
+    Returns:
+        list[tuple[str, str]]: List of image and label file paths to include.
+    """
     img_lbl_list = []
     try:
         files = os.listdir(files_path)
@@ -61,10 +83,22 @@ def get_images_and_labels_to_keep(files_path, idxs_to_leave):
 
 
 def get_idxs_to_leave(old_yaml_file, new_yaml_file):
+    """
+    Gets the class indices from the old dataset that match the class names in the new dataset.
+
+    Args:
+        old_yaml_file (dict): Parsed YAML data of the old dataset.
+        new_yaml_file (dict): Parsed YAML data of the new dataset.
+
+    Returns:
+        list[int]: List of class indices from the old dataset to keep.
+    """
     idxs_to_leave = []
     names = new_yaml_file['names']
     for name in names:
         idxs_to_leave.append( old_yaml_file['names'].index(name))
     return idxs_to_leave
     
-create_dataset_from_classes(old_dataset_folder_path, new_yaml_file)
+# old_dataset_folder_path = '/home/yassine/GitRepo/Data/SaladDataset'
+# new_yaml_file = '/home/yassine/GitRepo/Data/test/new_data.yaml'
+# create_dataset_from_classes(old_dataset_folder_path, new_yaml_file)
