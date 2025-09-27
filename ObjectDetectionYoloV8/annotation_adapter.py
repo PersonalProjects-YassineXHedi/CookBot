@@ -22,31 +22,33 @@ def change_class_number(old_yaml_file, new_yaml_file):
     dirs = ['val' ,'test', 'train']
     for dir in dirs:
         path = new_data[dir].replace('images','labels')
-        new_index = 0
         try:
             files = os.listdir(path)
         except:
             print("This path doesn't exist")
             continue
-        for name in new_data['names']:
-            old_index = old_data['names'].index(name)
-            for file in files:
+        new_names = new_data['names']
+        old_names = old_data['names']
+        for file in files:
                 file_path = path + '/' + file
-                change_label_index(file_path , old_index, new_index)
-            new_index += 1
+                change_label_index(file_path, new_names, old_names)
+        
             
         
 
 # ---------------- Private Helper Function ---------------- #
 
-def change_label_index(txt_label_file, old_index, new_index):
+def change_label_index(txt_label_file, new_names, old_names):
     """
-    Changes a specific class index in a YOLO label file to a new index.
-    
+    Remap class IDs in a YOLO label file from the old class order to the new one.
+
+    For each line: take the old class ID → get its name from old_names → find its
+    index in new_names → write that as the new class ID. Box coordinates are unchanged.
+
     Args:
-        txt_label_file (str): Path to the YOLO label file (.txt).
-        old_index (int): The original class index to replace.
-        new_index (int): The new class index to set.
+        txt_label_file (str): Path to the .txt label file.
+        new_names (list[str]): New class name list (target order).
+        old_names (list[str]): Old class name list (source order).
     """
     with open(txt_label_file, 'r') as file:
         lines = file.readlines()
@@ -54,12 +56,15 @@ def change_label_index(txt_label_file, old_index, new_index):
     new_lines= []
     for line in lines:
         line = line.split()
-        if(int(line[0]) == old_index):
-            line[0] = str(new_index)
+        class_name = old_names[int(line[0])]
+        new_index = new_names.index(class_name)
+        line[0] = str(new_index)
         new_line = ' '.join(line)+ '\n'
         new_lines.append(new_line)
 
     with open(txt_label_file, 'w') as file:
         file.writelines(new_lines)
+
+
 
     

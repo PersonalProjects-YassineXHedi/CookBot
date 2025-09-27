@@ -62,12 +62,20 @@ def get_images_and_labels_to_keep(files_path, idxs_to_leave):
         list[tuple[str, str]]: List of image and label file paths to include.
     """
     img_lbl_list = []
+    #to remove
+    x = []
+
     try:
         files = os.listdir(files_path)
         for file in files:
             lbl_path = files_path + '/' + file
             with open(lbl_path, 'r') as file:
                 lines = file.readlines()
+            if not lines:
+                img_path = lbl_path.replace('labels','images').replace('.txt','.jpg')
+                x.append((img_path, lbl_path))
+                img_lbl_list.append((img_path, lbl_path))
+                continue
             to_add = True
             for line in lines:
                 line = line.split()
@@ -79,6 +87,7 @@ def get_images_and_labels_to_keep(files_path, idxs_to_leave):
                 img_lbl_list.append((img_path, lbl_path))                   
     except:
         print("This path doesn't exist")
+    print(x)
     return img_lbl_list
 
 
@@ -99,6 +108,6 @@ def get_idxs_to_leave(old_yaml_file, new_yaml_file):
         idxs_to_leave.append( old_yaml_file['names'].index(name))
     return idxs_to_leave
     
-# old_dataset_folder_path = '/home/yassine/GitRepo/Data/SaladDataset'
-# new_yaml_file = '/home/yassine/GitRepo/Data/test/new_data.yaml'
-# create_dataset_from_classes(old_dataset_folder_path, new_yaml_file)
+old_dataset_folder_path = '/home/yassine/GitRepo/Data/SaladDataset-v3'
+new_yaml_file = '/home/yassine/GitRepo/Data/new_data.yaml'
+create_dataset_from_classes(old_dataset_folder_path, new_yaml_file)
